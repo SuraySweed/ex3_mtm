@@ -1,34 +1,24 @@
 #include "date_wrap.h"
 
-extern "C" {
-    #include "date.h"
-}
-
 using std::cout;
 using std::endl;
 using mtm::DateWrap;
 
-DateWrap::DateWrap(int const day, int const month, int const year) {
+DateWrap::DateWrap(int const day, int const month, int const year) : current_day(day), current_month(month),
+    current_year(year) 
+{
     date = dateCreate(day, month, year);
     if (!date) {
         throw InvalidDate();
     }
-    current_day = day;
-    current_month = month;
-    current_year = year;
 }
 
-
-DateWrap::DateWrap(const DateWrap& date_wrap) {
-    current_day = date_wrap.day();
-    current_month = date_wrap.month();
-    current_year = date_wrap.year();
-    date = dateCopy(date_wrap.date);
-}
+DateWrap::DateWrap(const DateWrap& date_wrap) : current_day(date_wrap.current_day),
+    current_month(date_wrap.current_month), current_year(date_wrap.current_year),
+    date(dateCopy(date_wrap.date)) {}
 
 DateWrap::~DateWrap() {
     dateDestroy(date);
-    //delete date;
 }
 
 int DateWrap::day() const {
@@ -43,11 +33,24 @@ int DateWrap::year() const {
     return current_year;
 }
 
+DateWrap& mtm::DateWrap::operator=(const DateWrap& date_wrap)
+{
+    if (this == &date_wrap) {
+        return *this;
+    }
+    dateDestroy(date);
+    date = dateCopy(date_wrap.date);
+    current_day = date_wrap.current_day;
+    current_month = date_wrap.current_month;
+    current_year = date_wrap.current_year;
+    return *this;
+}
+
 DateWrap DateWrap::operator++(int) {
+    DateWrap temp(*this);
     dateTick(this->date);
     dateGet(this->date, &current_day, &current_month, &current_year);
-
-    return *this;
+    return temp;
 }
 
 DateWrap& DateWrap::operator+=(const int days) {
@@ -59,7 +62,6 @@ DateWrap& DateWrap::operator+=(const int days) {
     for (int i = 0; i < days; i++) {
         dateTick(new_date);
     }
-
     dateDestroy(date);
     date = new_date;
     dateGet(new_date, &current_day, &current_month, &current_year);
@@ -67,27 +69,10 @@ DateWrap& DateWrap::operator+=(const int days) {
     return *this;
 }
 
-
 void DateWrap::print(const DateWrap& date_wrap) {
     cout << date_wrap;
 }
 
-/*
-ostream& mtm::operator<<(ostream& os, const DateWrap& date_wrap)
-{
-    return os << date_wrap.day() << '/' << date_wrap.month() << '/' << date_wrap.year();
-}
-*/
-/*
-bool mtm::operator>(const DateWrap& date_wrap1, const DateWrap& date_wrap2)
-{
-    return (dateCompare(date_wrap1.date, date_wrap2.date) > 0 ? true : false);
-}
-
-bool mtm::operator==(const DateWrap& date_wrap1, const DateWrap& date_wrap2) {
-    return (dateCompare(date_wrap1.date, date_wrap2.date) == 0);
-}
-*/
 bool mtm::operator<(const DateWrap& date_wrap1, const DateWrap& date_wrap2) {
     return (date_wrap2 > date_wrap1);
 }
