@@ -30,8 +30,12 @@ namespace mtm {
             return os << date_wrap.day() << '/' << date_wrap.month() << '/' << date_wrap.year();
         }
         void print(const DateWrap& date_wrap);
-        friend bool operator>(const DateWrap&, const DateWrap&);
-        friend bool operator==(const DateWrap&, const DateWrap&);
+        friend bool operator>(const DateWrap& date_wrap1, const DateWrap& date_wrap2) {
+            return (dateCompare(date_wrap1.date, date_wrap2.date) > 0 ? true : false);
+        }
+        friend bool operator==(const DateWrap& date_wrap1, const DateWrap& date_wrap2) {
+            return (dateCompare(date_wrap1.date, date_wrap2.date) == 0);
+        }
     };
 
       

@@ -1,9 +1,9 @@
 #include "date_wrap.h"
-/*
+
 extern "C" {
     #include "date.h"
 }
-*/
+
 using std::cout;
 using std::endl;
 using mtm::DateWrap;
@@ -78,7 +78,7 @@ ostream& mtm::operator<<(ostream& os, const DateWrap& date_wrap)
     return os << date_wrap.day() << '/' << date_wrap.month() << '/' << date_wrap.year();
 }
 */
-
+/*
 bool mtm::operator>(const DateWrap& date_wrap1, const DateWrap& date_wrap2)
 {
     return (dateCompare(date_wrap1.date, date_wrap2.date) > 0 ? true : false);
@@ -87,7 +87,7 @@ bool mtm::operator>(const DateWrap& date_wrap1, const DateWrap& date_wrap2)
 bool mtm::operator==(const DateWrap& date_wrap1, const DateWrap& date_wrap2) {
     return (dateCompare(date_wrap1.date, date_wrap2.date) == 0);
 }
-
+*/
 bool mtm::operator<(const DateWrap& date_wrap1, const DateWrap& date_wrap2) {
     return (date_wrap2 > date_wrap1);
 }
